@@ -71,3 +71,34 @@ root@Keenetic_Ultra:/opt/tmp$  curl --interface wg0 http://myip.wtf/json
 6. Далее поднимайте интерфейс `ip link set up dev awg0`
 
 Можете проверить : ` curl --interface awg0 http://myip.wtf/json`   
+
+
+
+Не проверял, но вот такой запуск должен работать:
+```
+#!/bin/sh
+
+ENABLED=yes
+PROCS=amneziawg-go
+ARGS="awg0"
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+pre_cmd() {
+  if [ ! -d "/sys/class/net/awg0" ]; then
+    ip link add dev awg0 type wireguard
+    ip address add dev awg0 10.8.1.4/32
+    awg setconf awg0 /opt/etc/awg.conf
+    ip link set up dev awg0
+  fi
+}
+
+PRECMD="pre_cmd"
+
+. /opt/etc/init.d/rc.func
+```
+Файл с таким содержимым помещаем в `/opt/etc/init.d`
+
+У меня строка `ip link add dev awg0 type wireguard` вызывает ошибку, но она не нужна для работы.
+Далее в КВАСе задаем команду `kvas vpn manual` и вводим имя интерфейса, `awg0` как из данного примера.
