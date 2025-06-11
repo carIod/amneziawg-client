@@ -1,10 +1,12 @@
 # amneziawg-client
-amneziawg-go для Entware
+## amneziawg-go для Entware
 
-Данный репазитарий является архивом файлов форума keenetic.ru
+_Данный репазитарий является архивом файлов из найденой ветки форума keenetic.ru
+[amneziawg-go для Entware](https://forum.keenetic.ru/topic/18794-amneziawg-go-%D0%B4%D0%BB%D1%8F-entware/)_
 
-https://forum.keenetic.ru/topic/18794-amneziawg-go-%D0%B4%D0%BB%D1%8F-entware/
 
+---
+Собрал для нескольких архитектур по просьбе трудящихся amneziawg-go  
 Пакет(ы) потребуются тем, кто не хочет ставить бету 4.2 и тем, у кого не кинетик. На некоторых роутерах по непонятной причине при запуске паника - https://github.com/Entware/Entware/issues/1078
 
 Проверил на mipsel кинетике - работает.
@@ -60,7 +62,9 @@ root@Keenetic_Ultra:/opt/tmp$  curl --interface wg0 http://myip.wtf/json
     "YourFuckingCountryCode": "NL"
 }
 ```
+Ну и собственно пакеты и Makefile тут - http://zyxnerd.zyxmon.org/files/amnezia/
 
+---
 Как это запустить если у вас роутер < 4.2:
 1. Скачайте и установите для своей архитектуры 2 установочных пакета
 2. Запустите `amneziawg-go awg0`  # awg0 - имя будущего интерфейса
@@ -68,10 +72,10 @@ root@Keenetic_Ultra:/opt/tmp$  curl --interface wg0 http://myip.wtf/json
 4. С помощью конфигурационного файла задайте остальные параметры `awg setconf awg0 ./test.conf`
    Внимание файл конфигурации немного отличается от обычно присылаемого, сохраните копию и отредактируйте.
    Удалите строки содержащие `Address=` и `DNS=` из секции `[Interface]`
-6. Далее поднимайте интерфейс `ip link set up dev awg0`
+6. Поднимайте интерфейс `ip link set up dev awg0`
+7. Проверьте : ` curl --interface awg0 http://myip.wtf/json`   
 
-Можете проверить : ` curl --interface awg0 http://myip.wtf/json`   
-
+Архитектуру Вы уже знаете когда выбирали файл для [установки Entware](https://help.keenetic.com/hc/ru/articles/360021214160-%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D1%8F-Entware-%D0%BD%D0%B0-USB-%D0%BD%D0%B0%D0%BA%D0%BE%D0%BF%D0%B8%D1%82%D0%B5%D0%BB%D1%8C) на флеш карту, если вдруг забыли то самый простой способ прочитать файл `/opt/etc/entware_release`.
 
 
 Не проверял, но вот такой запуск должен работать:
@@ -98,7 +102,8 @@ PRECMD="pre_cmd"
 
 . /opt/etc/init.d/rc.func
 ```
-Файл с таким содержимым помещаем в `/opt/etc/init.d`
+Файл с таким содержимым помещаем в `/opt/etc/init.d` имя файла необходимо выбрать такое что бы скрипт запускался ранее КВАС
 
-У меня строка `ip link add dev awg0 type wireguard` вызывает ошибку, но она не нужна для работы.
+У меня строка `ip link add dev awg0 type wireguard` вызывает ошибку, но она не нужна для работы.  
+Процесс amneziawg-go очень живучий не требует перезапуска, при пропадении связи с сервером даже на длительное время затем самостоятельно востанавливается.  
 Далее в КВАСе задаем команду `kvas vpn manual` и вводим имя интерфейса, `awg0` как из данного примера.
